@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c35baf1d619ae4f93811d48824f213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TooltipPanel: {fileID: 1869442060535710}
   TooltipText: {fileID: 114739553993997552}
 --- !u!114 &114622633207045968
 MonoBehaviour:

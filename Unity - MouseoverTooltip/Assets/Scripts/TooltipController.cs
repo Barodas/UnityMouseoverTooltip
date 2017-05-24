@@ -5,6 +5,7 @@ public class TooltipController : MonoBehaviour
 {
     public static TooltipController Instance;
 
+    public GameObject TooltipPanel;
     public Text TooltipText;
 
     private RectTransform _rect;
@@ -19,6 +20,8 @@ public class TooltipController : MonoBehaviour
 	
 	void Update ()
     {
+        TooltipPanel.SetActive(_isHovering);
+
         //_offset = new Vector3(_rect.rect.width * 0.5f, -(_rect.rect.height * 0.5f), 0);
         transform.position = Input.mousePosition/* + _offset*/;
 	}
