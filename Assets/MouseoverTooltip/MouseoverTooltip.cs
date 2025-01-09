@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,35 +14,38 @@ public class MouseoverTooltip : MonoBehaviour
     
     public float PaddingFromMouse;
     
-    [SerializeField]
-    GameObject _tooltipPanel;
-    [SerializeField]
-    TextMeshPro _text;
-    RectTransform _panelRect;
+    RectTransform _background;
+    LayoutElement _layoutElement;
+    TextMeshProUGUI _headerText;
+    TextMeshProUGUI _contentText;
+    
     bool _isHovering;
     
     void Start()
     {
         Instance = this;
-        _tooltipPanel = gameObject;
+        _background = transform.Find("Background").GetComponent<RectTransform>();
+        _layoutElement = _background.GetComponent<LayoutElement>();
+        _headerText = _background.transform.Find("HeaderText").GetComponent<TextMeshProUGUI>();
+        _contentText = _background.transform.Find("ContentText").GetComponent<TextMeshProUGUI>();
     }
 
-    void Update ()
+    void LateUpdate ()
     {
-        _tooltipPanel.SetActive(_isHovering);
-
+        // TODO: Add a delay before showing the tooltip when a mouseover event is received.
+        
         if(_isHovering)
         {
-            float width = _panelRect.rect.width;
-            float height = _panelRect.rect.height;
+            float width = _background.rect.width;
+            float height = _background.rect.height;
 
             bool flipVertical = false;
             bool flipHorizontal = false;
-            if(Input.mousePosition.x + width > Screen.width)
+            if(Input.mousePosition.x + (width + PaddingFromMouse) > Screen.width)
             {
                 flipHorizontal = true;
             }
-            if(Input.mousePosition.y - height < 0)
+            if(Input.mousePosition.y - (height + PaddingFromMouse) < 0)
             {
                 flipVertical = true;
             }
@@ -65,18 +69,25 @@ public class MouseoverTooltip : MonoBehaviour
             }
 
             transform.position = Input.mousePosition + offset;
-        }        
+        }
+        
+        _background.gameObject.SetActive(_isHovering);
 	}
 
-    public void AssignTooltip(string tooltipString)
+    public void AssignTooltip(string header, string content)
     {
-        _text.text = tooltipString;
+        _headerText.gameObject.SetActive(!string.IsNullOrEmpty(header));
+        _contentText.gameObject.SetActive(!string.IsNullOrEmpty(content));
+        _headerText.SetText(header);
+        _contentText.SetText(content);
         _isHovering = true;
+        _layoutElement.enabled = Math.Max(_headerText.preferredWidth, _contentText.preferredWidth) >= _layoutElement.preferredWidth;
     }
 
     public void UnassignTooltip()
     {
-        _text.text = "NoTooltip";
+        _headerText.SetText("");
+        _contentText.SetText("");
         _isHovering = false;
     }
 }
